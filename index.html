@@ -32,6 +32,24 @@
             position: relative;
             z-index: 2;
         }
+        .photo-container {
+            width: 180px;
+            height: 180px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 4px solid white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        .photo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        .photo-container:hover img {
+            transform: scale(1.05);
+        }
         h1 {
             font-family: 'Dancing Script', cursive;
             font-size: 2.8em;
@@ -89,6 +107,24 @@
             background: rgba(255,255,255,0.1);
             opacity: 1;
         }
+        .music-btn {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 0.9em;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .music-btn:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
         
         /* Анимация сердечек */
         .heart {
@@ -110,7 +146,20 @@
     <!-- Летающие сердечки -->
     <div id="hearts-container"></div>
     
+    <!-- Фоновая музыка (автовоспроизведение выключено) -->
+    <audio id="bg-music" loop>
+        <source src="https://disk.yandex.ru/d/OsTOHiOpZBsL5A" type="audio/mpeg">
+        Ваш браузер не поддерживает аудио элемент
+    </audio>
+    
     <div class="container">
+        <!-- Фото -->
+        <div class="photo-container">
+            <img src="file:///C:/Users/bymeow/Desktop/photo_2025-12-15_21-11-46.jpg" 
+                 alt="Егор & Алёна" 
+                 id="couple-photo">
+        </div>
+        
         <h1>Егор & Алёна</h1>
         <p class="subtitle">Мы вместе уже</p>
         
@@ -120,6 +169,11 @@
             <div><span id="minutes">00</span><div class="label">Минут</div></div>
             <div><span id="seconds">00</span><div class="label">Секунд</div></div>
         </div>
+        
+        <!-- Кнопка музыки -->
+        <button class="music-btn" onclick="toggleMusic()" id="music-button">
+            🎵 Включить музыку
+        </button>
         
         <div class="footer">
             <a href="https://t.me/bymeow" target="_blank" style="color: #ff77aa; font-weight: bold;">
@@ -165,6 +219,61 @@
             
             setTimeout(() => heart.remove(), 6000);
         }
+        
+        // Управление музыкой
+        function toggleMusic() {
+            const audio = document.getElementById('bg-music');
+            const button = document.getElementById('music-button');
+            
+            // Настройка громкости (30%)
+            audio.volume = 0.3;
+            
+            if (audio.paused) {
+                // Воспроизводим музыку
+                audio.play().then(() => {
+                    button.innerHTML = '🔇 Выключить музыку';
+                }).catch(error => {
+                    // Если авто-плей заблокирован, показываем сообщение
+                    alert('Нажми "Разрешить", чтобы включить музыку');
+                    button.innerHTML = '🎵 Разрешить музыку';
+                });
+            } else {
+                // Останавливаем музыку
+                audio.pause();
+                button.innerHTML = '🎵 Включить музыку';
+            }
+        }
+        
+        // Авто-включение музыки при загрузке (с задержкой)
+        setTimeout(() => {
+            const audio = document.getElementById('bg-music');
+            audio.volume = 0.3;
+            
+            // Пытаемся включить музыку автоматически
+            audio.play().then(() => {
+                document.getElementById('music-button').innerHTML = '🔇 Выключить музыку';
+            }).catch(() => {
+                // Если браузер блокирует авто-плей, оставляем кнопку
+                console.log('Автовоспроизведение заблокировано. Нужно нажать кнопку.');
+            });
+        }, 1000);
+        
+        // Меняем фото при клике (опционально)
+        document.getElementById('couple-photo').addEventListener('click', function() {
+            const photos = [
+                'https://images.unsplash.com/photo-1518568814500-bf0f8d125f46?w=400&h=400&fit=crop&crop=face',
+                'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop&crop=face',
+                'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=400&h=400&fit=crop&crop=face'
+            ];
+            const currentSrc = this.src;
+            let newSrc;
+            
+            do {
+                newSrc = photos[Math.floor(Math.random() * photos.length)];
+            } while (newSrc === currentSrc && photos.length > 1);
+            
+            this.src = newSrc;
+        });
         
         // Инициализация
         setInterval(updateTimer, 1000);
