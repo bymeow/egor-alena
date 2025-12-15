@@ -3,194 +3,644 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Егор & Алёна ❤️</title>
+    <title>Егор & Алёна ❤️ Наш мир</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --night-bg: linear-gradient(135deg, #0c0c2e 0%, #1a1a3e 50%, #2d1b3e 100%);
+            --day-bg: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --card-bg: rgba(255, 255, 255, 0.1);
+            --text-color: #fff;
+            --accent-color: #ff4d94;
+            --shadow-color: rgba(255, 77, 148, 0.4);
+            --moon-color: #ffd700;
+            --sun-color: #ff9900;
+        }
+
         body {
-            font-family: 'Montserrat', sans-serif;
-            background: linear-gradient(135deg, #6a0dad, #58a6ff, #ff77aa);
+            font-family: 'Poppins', sans-serif;
+            background: var(--night-bg);
+            color: var(--text-color);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            color: white;
-            text-align: center;
             padding: 20px;
+            transition: background 1s ease;
             overflow-x: hidden;
+            position: relative;
         }
+
+        body.day-mode {
+            background: var(--day-bg);
+            --card-bg: rgba(255, 255, 255, 0.25);
+            --text-color: #333;
+            --shadow-color: rgba(77, 150, 255, 0.4);
+        }
+
+        /* Звёзды для ночного режима */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        /* Облака для дневного режима */
+        .clouds {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+
+        .day-mode .clouds {
+            opacity: 0.7;
+        }
+
+        .cloud {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            filter: blur(10px);
+        }
+
         .container {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(12px);
+            background: var(--card-bg);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 25px;
             padding: 40px 30px;
-            border-radius: 20px;
             max-width: 500px;
             width: 100%;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3),
+                        0 0 30px var(--shadow-color);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             position: relative;
-            z-index: 2;
+            z-index: 10;
+            transition: all 0.5s ease;
         }
-        .photo-container {
-            width: 180px;
-            height: 180px;
-            margin: 0 auto 20px;
+
+        /* Переключатель день/ночь */
+        .theme-switch {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 60px;
+            height: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            padding: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .theme-switch:hover {
+            transform: scale(1.05);
+        }
+
+        .theme-switch::before {
+            content: '';
+            position: absolute;
+            width: 24px;
+            height: 24px;
             border-radius: 50%;
-            overflow: hidden;
-            border: 4px solid white;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            background: var(--moon-color);
+            transition: transform 0.5s ease, background 0.5s ease;
         }
-        .photo-container img {
+
+        .day-mode .theme-switch::before {
+            transform: translateX(30px);
+            background: var(--sun-color);
+        }
+
+        .theme-switch i {
+            position: absolute;
+            font-size: 14px;
+            transition: opacity 0.3s ease;
+        }
+
+        .theme-switch .moon {
+            left: 10px;
+            color: #aaa;
+        }
+
+        .theme-switch .sun {
+            right: 10px;
+            color: #ff9900;
+            opacity: 0;
+        }
+
+        .day-mode .theme-switch .moon {
+            opacity: 0;
+        }
+
+        .day-mode .theme-switch .sun {
+            opacity: 1;
+        }
+
+        /* Фото с розовой подсветкой */
+        .photo-container {
+            width: 220px;
+            height: 220px;
+            margin: 0 auto 25px;
+            position: relative;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .photo-frame {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 
+                0 0 0 8px rgba(255, 255, 255, 0.1),
+                0 0 30px 15px rgba(255, 77, 148, 0.6),
+                inset 0 0 20px rgba(255, 255, 255, 0.2);
+            transition: all 0.5s ease;
+            animation: pulse-glow 4s infinite alternate;
+        }
+
+        @keyframes pulse-glow {
+            0% { box-shadow: 
+                0 0 0 8px rgba(255, 255, 255, 0.1),
+                0 0 30px 15px rgba(255, 77, 148, 0.6),
+                inset 0 0 20px rgba(255, 255, 255, 0.2); }
+            100% { box-shadow: 
+                0 0 0 8px rgba(255, 255, 255, 0.1),
+                0 0 40px 20px rgba(255, 77, 148, 0.8),
+                inset 0 0 30px rgba(255, 255, 255, 0.3); }
+        }
+
+        .photo-frame img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.5s ease;
+            transition: transform 0.8s ease;
         }
-        .photo-container:hover img {
+
+        .photo-frame:hover img {
             transform: scale(1.05);
         }
-        h1 {
+
+        /* Заголовок */
+        .title {
             font-family: 'Dancing Script', cursive;
-            font-size: 2.8em;
-            margin-bottom: 5px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            font-size: 3.2em;
+            text-align: center;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #ff4d94, #ff9a9e);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 2px 10px rgba(255, 77, 148, 0.3);
+            font-weight: 700;
         }
+
         .subtitle {
+            text-align: center;
             font-size: 1.1em;
-            margin-bottom: 25px;
+            margin-bottom: 30px;
             opacity: 0.9;
+            letter-spacing: 1px;
         }
+
+        /* Таймер */
         .timer {
             display: flex;
             justify-content: space-around;
             margin: 30px 0;
-            font-size: 1.7em;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 15px;
         }
-        .timer > div {
-            background: rgba(255,255,255,0.1);
-            padding: 15px 10px;
-            border-radius: 10px;
-            min-width: 70px;
+
+        .time-unit {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            padding: 20px 15px;
+            min-width: 80px;
             flex: 1;
+            text-align: center;
             backdrop-filter: blur(5px);
-            border: 1px solid rgba(255,255,255,0.2);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.3s ease;
         }
-        .timer span {
-            font-size: 1.8em;
-            font-weight: bold;
+
+        .time-unit:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .time-unit span {
+            font-size: 2.2em;
+            font-weight: 600;
             display: block;
             margin-bottom: 5px;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         }
-        .label {
-            font-size: 0.5em;
-            opacity: 0.9;
+
+        .time-unit .label {
+            font-size: 0.75em;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
+            opacity: 0.8;
         }
+
+        /* Кнопка музыки */
+        .music-player {
+            text-align: center;
+            margin: 25px 0;
+        }
+
+        .music-btn {
+            background: linear-gradient(45deg, #ff4d94, #ff6b9d);
+            border: none;
+            color: white;
+            padding: 16px 35px;
+            border-radius: 50px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(255, 77, 148, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .music-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(255, 77, 148, 0.6);
+            background: linear-gradient(45deg, #ff6b9d, #ff4d94);
+        }
+
+        .music-btn:active {
+            transform: translateY(0);
+        }
+
+        .music-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.7s ease;
+        }
+
+        .music-btn:hover::before {
+            left: 100%;
+        }
+
+        .music-btn i {
+            font-size: 1.3em;
+        }
+
+        /* Футер */
         .footer {
+            text-align: center;
             margin-top: 25px;
             opacity: 0.8;
             font-size: 0.9em;
         }
+
         .footer a {
-            color: white;
+            color: #ff4d94;
             text-decoration: none;
+            font-weight: 600;
             padding: 5px 10px;
             border-radius: 5px;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
             display: inline-block;
         }
+
+        .day-mode .footer a {
+            color: #1a73e8;
+        }
+
         .footer a:hover {
-            background: rgba(255,255,255,0.1);
-            opacity: 1;
-        }
-        .music-btn {
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.3);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 25px;
-            font-size: 0.9em;
-            cursor: pointer;
-            margin-top: 15px;
-            transition: all 0.3s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .music-btn:hover {
-            background: rgba(255,255,255,0.2);
+            background: rgba(255, 77, 148, 0.1);
             transform: translateY(-2px);
         }
-        
-        /* Анимация сердечек */
-        .heart {
-            position: absolute;
-            font-size: 24px;
-            animation: float 6s linear infinite;
-            z-index: 1;
-            opacity: 0.7;
+
+        /* Анимация звуковых волн */
+        .sound-wave {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-left: 8px;
+            height: 20px;
         }
-        @keyframes float {
-            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+
+        .wave-bar {
+            width: 4px;
+            background: white;
+            border-radius: 2px;
+            animation: wave 1.2s ease-in-out infinite;
+        }
+
+        .wave-bar:nth-child(2) { animation-delay: 0.1s; }
+        .wave-bar:nth-child(3) { animation-delay: 0.2s; }
+        .wave-bar:nth-child(4) { animation-delay: 0.3s; }
+        .wave-bar:nth-child(5) { animation-delay: 0.4s; }
+
+        @keyframes wave {
+            0%, 100% { height: 5px; }
+            50% { height: 20px; }
+        }
+
+        /* Индикатор проигрывания */
+        .playing-indicator {
+            display: none;
+            font-size: 0.9em;
+            margin-top: 10px;
+            color: #ff4d94;
+            font-weight: 500;
+        }
+
+        .day-mode .playing-indicator {
+            color: #1a73e8;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 500px) {
+            .container {
+                padding: 30px 20px;
+            }
+            .title {
+                font-size: 2.5em;
+            }
+            .photo-container {
+                width: 180px;
+                height: 180px;
+            }
+            .time-unit {
+                min-width: 70px;
+                padding: 15px 10px;
+            }
+            .time-unit span {
+                font-size: 1.8em;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Летающие сердечки -->
-    <div id="hearts-container"></div>
+    <!-- Звёзды для ночного режима -->
+    <div class="stars" id="stars"></div>
     
-    <!-- Фоновая музыка (автовоспроизведение выключено) -->
-    <audio id="bg-music" loop>
-        <source src="https://disk.yandex.ru/d/OsTOHiOpZBsL5A" type="audio/mpeg">
-        Ваш браузер не поддерживает аудио элемент
-    </audio>
+    <!-- Облака для дневного режима -->
+    <div class="clouds" id="clouds"></div>
     
     <div class="container">
+        <!-- Переключатель темы -->
+        <div class="theme-switch" id="themeSwitch">
+            <i class="fas fa-moon moon"></i>
+            <i class="fas fa-sun sun"></i>
+        </div>
+        
         <!-- Фото -->
         <div class="photo-container">
-            <img src="file:///C:/Users/bymeow/Desktop/photo_2025-12-15_21-11-46.jpg" 
-                 alt="Егор & Алёна" 
-                 id="couple-photo">
+            <div class="photo-frame">
+                <img src="https://images.unsplash.com/photo-1518568814500-bf0f8d125f46?w=400&h=400&fit=crop&crop=face" 
+                     alt="Егор & Алёна" 
+                     id="couplePhoto">
+            </div>
         </div>
         
-        <h1>Егор & Алёна</h1>
+        <!-- Заголовок -->
+        <h1 class="title">Егор & Алёна</h1>
         <p class="subtitle">Мы вместе уже</p>
         
+        <!-- Таймер -->
         <div class="timer">
-            <div><span id="days">00</span><div class="label">Дней</div></div>
-            <div><span id="hours">00</span><div class="label">Часов</div></div>
-            <div><span id="minutes">00</span><div class="label">Минут</div></div>
-            <div><span id="seconds">00</span><div class="label">Секунд</div></div>
+            <div class="time-unit">
+                <span id="days">00</span>
+                <div class="label">Дней</div>
+            </div>
+            <div class="time-unit">
+                <span id="hours">00</span>
+                <div class="label">Часов</div>
+            </div>
+            <div class="time-unit">
+                <span id="minutes">00</span>
+                <div class="label">Минут</div>
+            </div>
+            <div class="time-unit">
+                <span id="seconds">00</span>
+                <div class="label">Секунд</div>
+            </div>
         </div>
         
-        <!-- Кнопка музыки -->
-        <button class="music-btn" onclick="toggleMusic()" id="music-button">
-            🎵 Включить музыку
-        </button>
+        <!-- Музыкальный плеер -->
+        <div class="music-player">
+            <button class="music-btn" id="musicButton">
+                <i class="fas fa-play"></i>
+                Включить нашу песню
+                <div class="sound-wave" id="soundWave">
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                </div>
+            </button>
+            <div class="playing-indicator" id="playingIndicator">
+                <i class="fas fa-volume-up"></i> Сейчас играет: Наша песня
+            </div>
+        </div>
         
+        <!-- Футер -->
         <div class="footer">
-            <a href="https://t.me/bymeow" target="_blank" style="color: #ff77aa; font-weight: bold;">
-                ❤️ Создано Егором
+            <a href="https://t.me/bymeow" target="_blank">
+                <i class="fab fa-telegram"></i> Создано с любовью Егором
             </a>
             <br>
-            <small style="opacity: 0.6; margin-top: 5px; display: block;">
+            <small style="opacity: 0.6; margin-top: 8px; display: block;">
                 С 20 апреля 2025 года
             </small>
         </div>
     </div>
 
+    <!-- Аудио элемент -->
+    <audio id="backgroundMusic" preload="auto">
+        <source src="https://eu.hitmo-top.com/song/79123064" type="audio/mpeg">
+        Ваш браузер не поддерживает аудио элемент
+    </audio>
+
     <script>
-        // Таймер
-        const startDate = new Date("2025-04-20T00:00:00+09:00");
+        // Элементы
+        const themeSwitch = document.getElementById('themeSwitch');
+        const body = document.body;
+        const starsContainer = document.getElementById('stars');
+        const cloudsContainer = document.getElementById('clouds');
+        const musicButton = document.getElementById('musicButton');
+        const backgroundMusic = document.getElementById('backgroundMusic');
+        const soundWave = document.getElementById('soundWave');
+        const playingIndicator = document.getElementById('playingIndicator');
+        const couplePhoto = document.getElementById('couplePhoto');
         
+        // Твои данные (замени на свои)
+        const YOUR_PHOTO_URL = "https://images.unsplash.com/photo-1518568814500-bf0f8d125f46?w=400&h=400&fit=crop&crop=face";
+        const YOUR_SONG_URL = "https://eu.hitmo-top.com/song/79123064";
+        const START_DATE = "2025-04-20T00:00:00+09:00";
+        const YOUR_TELEGRAM = "https://t.me/bymeow";
+        
+        // Инициализация
+        document.querySelector('.footer a').href = YOUR_TELEGRAM;
+        couplePhoto.src = YOUR_PHOTO_URL;
+        backgroundMusic.querySelector('source').src = YOUR_SONG_URL;
+        backgroundMusic.load();
+        
+        // Создание звёзд
+        function createStars() {
+            starsContainer.innerHTML = '';
+            for (let i = 0; i < 150; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                
+                // Случайные координаты
+                const x = Math.random() * 100;
+                const y = Math.random() * 100;
+                
+                // Случайный размер
+                const size = Math.random() * 3 + 1;
+                
+                // Случайная длительность анимации
+                const duration = Math.random() * 4 + 2;
+                
+                star.style.left = `${x}%`;
+                star.style.top = `${y}%`;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                star.style.animationDuration = `${duration}s`;
+                star.style.animationDelay = `${Math.random() * 2}s`;
+                
+                starsContainer.appendChild(star);
+            }
+        }
+        
+        // Создание облаков
+        function createClouds() {
+            cloudsContainer.innerHTML = '';
+            for (let i = 0; i < 10; i++) {
+                const cloud = document.createElement('div');
+                cloud.classList.add('cloud');
+                
+                // Случайные координаты
+                const x = Math.random() * 100;
+                const y = Math.random() * 100;
+                
+                // Случайный размер
+                const width = Math.random() * 120 + 80;
+                const height = Math.random() * 60 + 40;
+                
+                cloud.style.left = `${x}%`;
+                cloud.style.top = `${y}%`;
+                cloud.style.width = `${width}px`;
+                cloud.style.height = `${height}px`;
+                
+                cloudsContainer.appendChild(cloud);
+            }
+        }
+        
+        // Переключение темы
+        themeSwitch.addEventListener('click', () => {
+            body.classList.toggle('day-mode');
+            
+            // Обновляем звёзды и облака при переключении
+            if (body.classList.contains('day-mode')) {
+                starsContainer.style.opacity = '0';
+                cloudsContainer.style.opacity = '0.7';
+            } else {
+                starsContainer.style.opacity = '1';
+                cloudsContainer.style.opacity = '0';
+            }
+        });
+        
+        // Управление музыкой
+        let isPlaying = false;
+        
+        musicButton.addEventListener('click', () => {
+            if (isPlaying) {
+                // Останавливаем музыку
+                backgroundMusic.pause();
+                musicButton.innerHTML = '<i class="fas fa-play"></i> Включить нашу песню';
+                soundWave.style.display = 'none';
+                playingIndicator.style.display = 'none';
+                isPlaying = false;
+            } else {
+                // Включаем музыку
+                backgroundMusic.volume = 0.7;
+                
+                // Пытаемся воспроизвести
+                const playPromise = backgroundMusic.play();
+                
+                if (playPromise !== undefined) {
+                    playPromise.then(() => {
+                        // Успешно начали воспроизведение
+                        musicButton.innerHTML = '<i class="fas fa-pause"></i> Остановить музыку';
+                        soundWave.style.display = 'inline-flex';
+                        playingIndicator.style.display = 'block';
+                        isPlaying = true;
+                    }).catch(error => {
+                        // Ошибка воспроизведения (часто из-за политики автовоспроизведения)
+                        alert('Нажмите "Разрешить" для воспроизведения музыки или включите звук вручную.');
+                        console.log('Ошибка воспроизведения:', error);
+                    });
+                }
+            }
+        });
+        
+        // Обновляем индикатор при окончании музыки
+        backgroundMusic.addEventListener('ended', () => {
+            musicButton.innerHTML = '<i class="fas fa-play"></i> Включить нашу песню';
+            soundWave.style.display = 'none';
+            playingIndicator.style.display = 'none';
+            isPlaying = false;
+        });
+        
+        // Таймер отношений
         function updateTimer() {
+            const startDate = new Date(START_DATE);
             const now = new Date();
             const diff = now - startDate;
             
@@ -205,66 +655,15 @@
             document.getElementById("seconds").textContent = String(seconds).padStart(2, "0");
         }
         
-        // Летающие сердечки
-        function createHeart() {
-            const heart = document.createElement('div');
-            heart.className = 'heart';
-            heart.innerHTML = '❤️';
-            heart.style.left = Math.random() * 100 + 'vw';
-            heart.style.fontSize = (Math.random() * 20 + 15) + 'px';
-            heart.style.color = ['#ff77aa', '#ff416c', '#ff4b2b'][Math.floor(Math.random() * 3)];
-            heart.style.animationDuration = (Math.random() * 4 + 4) + 's';
-            
-            document.getElementById('hearts-container').appendChild(heart);
-            
-            setTimeout(() => heart.remove(), 6000);
-        }
-        
-        // Управление музыкой
-        function toggleMusic() {
-            const audio = document.getElementById('bg-music');
-            const button = document.getElementById('music-button');
-            
-            // Настройка громкости (30%)
-            audio.volume = 0.3;
-            
-            if (audio.paused) {
-                // Воспроизводим музыку
-                audio.play().then(() => {
-                    button.innerHTML = '🔇 Выключить музыку';
-                }).catch(error => {
-                    // Если авто-плей заблокирован, показываем сообщение
-                    alert('Нажми "Разрешить", чтобы включить музыку');
-                    button.innerHTML = '🎵 Разрешить музыку';
-                });
-            } else {
-                // Останавливаем музыку
-                audio.pause();
-                button.innerHTML = '🎵 Включить музыку';
-            }
-        }
-        
-        // Авто-включение музыки при загрузке (с задержкой)
-        setTimeout(() => {
-            const audio = document.getElementById('bg-music');
-            audio.volume = 0.3;
-            
-            // Пытаемся включить музыку автоматически
-            audio.play().then(() => {
-                document.getElementById('music-button').innerHTML = '🔇 Выключить музыку';
-            }).catch(() => {
-                // Если браузер блокирует авто-плей, оставляем кнопку
-                console.log('Автовоспроизведение заблокировано. Нужно нажать кнопку.');
-            });
-        }, 1000);
-        
-        // Меняем фото при клике (опционально)
-        document.getElementById('couple-photo').addEventListener('click', function() {
+        // Меняем фото при клике
+        couplePhoto.addEventListener('click', function() {
             const photos = [
-                'https://images.unsplash.com/photo-1518568814500-bf0f8d125f46?w=400&h=400&fit=crop&crop=face',
-                'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop&crop=face',
-                'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=400&h=400&fit=crop&crop=face'
+                "https://images.unsplash.com/photo-1518568814500-bf0f8d125f46?w=400&h=400&fit=crop&crop=face",
+                "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop&crop=face",
+                "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=400&h=400&fit=crop&crop=face",
+                "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=400&fit=crop&crop=face"
             ];
+            
             const currentSrc = this.src;
             let newSrc;
             
@@ -272,14 +671,38 @@
                 newSrc = photos[Math.floor(Math.random() * photos.length)];
             } while (newSrc === currentSrc && photos.length > 1);
             
-            this.src = newSrc;
+            // Плавная смена фото
+            this.style.opacity = '0.5';
+            setTimeout(() => {
+                this.src = newSrc;
+                this.style.opacity = '1';
+            }, 300);
         });
         
         // Инициализация
+        createStars();
+        createClouds();
         setInterval(updateTimer, 1000);
-        setInterval(createHeart, 300);
         updateTimer();
-        createHeart(); createHeart(); createHeart(); // Сразу несколько сердечек
+        
+        // Авто-воспроизведение музыки при загрузке (с задержкой)
+        setTimeout(() => {
+            // Пробуем включить музыку автоматически
+            backgroundMusic.volume = 0.7;
+            
+            const playPromise = backgroundMusic.play();
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    musicButton.innerHTML = '<i class="fas fa-pause"></i> Остановить музыку';
+                    soundWave.style.display = 'inline-flex';
+                    playingIndicator.style.display = 'block';
+                    isPlaying = true;
+                }).catch(() => {
+                    // Автовоспроизведение заблокировано - это нормально
+                    console.log('Автовоспроизведение музыки заблокировано браузером');
+                });
+            }
+        }, 2000);
     </script>
 </body>
 </html>
